@@ -1,4 +1,6 @@
 const path = require("path");
+const tailwindcss = require("tailwindcss");
+const autoprefixer = require("autoprefixer");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const webpack = require("webpack");
@@ -32,45 +34,22 @@ module.exports = function(_env, argv) {
           }
         },
         {
-          test: /\.css$/,
-          include: /node_modules/,
-          use: [
-            isProduction ? MiniCssExtractPlugin.loader : "style-loader",
-            "css-loader"
-          ]
-        },
-        {
-          test: /\.css$/,
-          exclude: /node_modules/,
-          use: [
-            isProduction ? MiniCssExtractPlugin.loader : "style-loader",
-            {
-              loader: "css-loader",
-              options: {
-                modules: true
-              }
-            }
-          ]
-        },
-        {
-          test: /\.s[ac]ss$/,
-          use: [
-            isProduction ? MiniCssExtractPlugin.loader : "style-loader",
-            {
-              loader: "css-loader",
-              options: {
-                importLoaders: 2
-              }
+        test: /\.(css|scss|sass)$/,
+        use: [
+           MiniCssExtractPlugin.loader,
+          'css-loader',
+          {
+            loader: 'postcss-loader', // postcss loader needed for tailwindcss
+            options: {
+              postcssOptions: {
+                ident: 'postcss',
+                plugins: [tailwindcss, autoprefixer],
+              },
             },
-            "resolve-url-loader",
-            {
-              loader: "sass-loader",
-              options: {
-                sourceMap: true
-              }
-            }
-          ]
-        },
+          },
+          'sass-loader'
+        ],
+      },
         {
           test: /\.(png|jpg|gif)$/i,
           use: {
@@ -98,11 +77,10 @@ module.exports = function(_env, argv) {
       extensions: [".js", ".jsx"]
     },
     plugins: [
-      isProduction &&
-        new MiniCssExtractPlugin({
+      new MiniCssExtractPlugin({
           filename: "assets/css/[name].[contenthash:8].css",
           chunkFilename: "assets/css/[name].[contenthash:8].chunk.css"
-        }),
+      }),
       new HtmlWebpackPlugin({
         template: path.resolve(__dirname, "public/index.html"),
         inject: true
