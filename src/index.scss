@@ -8,9 +8,15 @@ body {
   font-family: "Open Sans", sans-serif;
 }
 
-.wavy-pattern {
+.bg-duck {
   background-image: url("./assets/images/background.jpg");
   background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.reset-bg-position {
+  background-position-x: 100%;
+  background-position-y: 0;
 }
 
 .fade-transition {

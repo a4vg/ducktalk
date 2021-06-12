@@ -2,24 +2,29 @@ import React from "react";
 import { Link } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 
-const Login = () => {
+const Register = () => {
   return (
     <MainLayout>
       <h2 className="text-3xl text-center font-bold mt-4 bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-yellow-500">
-        Login
+        Register
       </h2>
 
       <form className="mt-3 mx-6" action="#">
-        {/* <span className="flex justify-center text-red-500">
-          <svg
-            className="stroke-current text-red-500 mr-1 w-5 h-5"
-            viewBox="0 0 20 20"
-          >
-            <path d="M10.185,1.417c-4.741,0-8.583,3.842-8.583,8.583c0,4.74,3.842,8.582,8.583,8.582S18.768,14.74,18.768,10C18.768,5.259,14.926,1.417,10.185,1.417 M10.185,17.68c-4.235,0-7.679-3.445-7.679-7.68c0-4.235,3.444-7.679,7.679-7.679S17.864,5.765,17.864,10C17.864,14.234,14.42,17.68,10.185,17.68 M10.824,10l2.842-2.844c0.178-0.176,0.178-0.46,0-0.637c-0.177-0.178-0.461-0.178-0.637,0l-2.844,2.841L7.341,6.52c-0.176-0.178-0.46-0.178-0.637,0c-0.178,0.176-0.178,0.461,0,0.637L9.546,10l-2.841,2.844c-0.178,0.176-0.178,0.461,0,0.637c0.178,0.178,0.459,0.178,0.637,0l2.844-2.841l2.844,2.841c0.178,0.178,0.459,0.178,0.637,0c0.178-0.176,0.178-0.461,0-0.637L10.824,10z"></path>
-          </svg>
-          Incorrect user/password
-        </span> */}
         <label className="block" htmlFor="email">
+          Name
+        </label>
+        <div className="shadow p-2 rounded-lg">
+          <svg className="w-6 h-6 inline" viewBox="0 0 20 20">
+            <path d="M12.075,10.812c1.358-0.853,2.242-2.507,2.242-4.037c0-2.181-1.795-4.618-4.198-4.618S5.921,4.594,5.921,6.775c0,1.53,0.884,3.185,2.242,4.037c-3.222,0.865-5.6,3.807-5.6,7.298c0,0.23,0.189,0.42,0.42,0.42h14.273c0.23,0,0.42-0.189,0.42-0.42C17.676,14.619,15.297,11.677,12.075,10.812 M6.761,6.775c0-2.162,1.773-3.778,3.358-3.778s3.359,1.616,3.359,3.778c0,2.162-1.774,3.778-3.359,3.778S6.761,8.937,6.761,6.775 M3.415,17.69c0.218-3.51,3.142-6.297,6.704-6.297c3.562,0,6.486,2.787,6.705,6.297H3.415z"></path>
+          </svg>
+          <input
+            className="ml-4 mt-1 w-4/5 inline font-light focus:outline-none"
+            type="email"
+            placeholder="Name goes here"
+          />
+        </div>
+
+        <label className="block mt-3" htmlFor="email">
           Email
         </label>
         <div className="shadow p-2 rounded-lg">
@@ -29,7 +34,7 @@ const Login = () => {
           <input
             className="ml-4 mt-1 w-4/5 inline font-light focus:outline-none"
             type="email"
-            placeholder="Email goes here"
+            placeholder="And email goes here"
           />
         </div>
 
@@ -48,22 +53,22 @@ const Login = () => {
         </div>
 
         <button className="mt-5 bg-gradient-to-r from-orange-500 to-yellow-500 font-semibold text-white rounded-xl py-2 w-full hover:opacity-75 transition-opacity">
-          Enter duck dimension
+          Begin your experience
         </button>
       </form>
 
       <div className="font-light mt-5 flex justify-center cursor-pointer">
-        Don't have an account?
+        Already have an account?
         <Link
-          to="/register"
+          to="/login"
           className="font-bold underline text-orange-500 pl-1 hover:text-orange-300 transition-colors"
         >
-          Register
+          Login
         </Link>
       </div>
 
       <Link to="/">
-        <div className="font-light mt-5 flex justify-center cursor-pointer">
+        <div className="font-light mt-1 flex justify-center cursor-pointer">
           <svg className="h-5 w-5 mr-1" viewBox="0 0 20 20">
             <path d="M18.121,9.88l-7.832-7.836c-0.155-0.158-0.428-0.155-0.584,0L1.842,9.913c-0.262,0.263-0.073,0.705,0.292,0.705h2.069v7.042c0,0.227,0.187,0.414,0.414,0.414h3.725c0.228,0,0.414-0.188,0.414-0.414v-3.313h2.483v3.313c0,0.227,0.187,0.414,0.413,0.414h3.726c0.229,0,0.414-0.188,0.414-0.414v-7.042h2.068h0.004C18.331,10.617,18.389,10.146,18.121,9.88 M14.963,17.245h-2.896v-3.313c0-0.229-0.186-0.415-0.414-0.415H8.342c-0.228,0-0.414,0.187-0.414,0.415v3.313H5.032v-6.628h9.931V17.245z M3.133,9.79l6.864-6.868l6.867,6.868H3.133z"></path>
           </svg>{" "}
@@ -74,4 +79,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
