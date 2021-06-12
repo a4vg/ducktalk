@@ -47,9 +47,11 @@ const Login = () => {
           />
         </div>
 
-        <button className="mt-5 bg-gradient-to-r from-orange-500 to-yellow-500 font-semibold text-white rounded-xl py-2 w-full hover:opacity-75 transition-opacity">
-          Enter duck dimension
-        </button>
+        <Link to="/chat">
+          <button className="mt-5 bg-gradient-to-r from-orange-500 to-yellow-500 font-semibold text-white rounded-xl py-2 w-full hover:opacity-75 transition-opacity">
+            Enter duck dimension
+          </button>
+        </Link>
       </form>
 
       <div className="font-light mt-5 flex justify-center cursor-pointer">
