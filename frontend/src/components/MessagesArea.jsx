@@ -25,7 +25,11 @@ const MessagesArea = ({ messages }) => {
             }`}
           >
             {m.text}
-            <span className="text-xs text-gray-400 mx-2 whitespace-nowrap">
+            <span
+              className={`text-xs mx-2 whitespace-nowrap ${
+                m.from === "You" ? "text-gray-400" : "text-gray-200"
+              }`}
+            >
               {m.time}
             </span>
           </div>
