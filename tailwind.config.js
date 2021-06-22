@@ -1,5 +1,4 @@
-const colors = require('tailwindcss/colors')
-
+const colors = require("tailwindcss/colors");
 
 module.exports = {
   purge: ["./dist/*.html", "./src/**/*.js"],
@@ -7,16 +6,16 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        "ducktalk": ["Lilita One", "cursive"],
+        ducktalk: ["Lilita One", "cursive"],
       },
       zIndex: {
         "-10": -10,
       },
       colors: {
-        orange: colors.orange
+        orange: colors.orange,
       },
       screens: {
-        "portrait": {"raw": "(orientation: portrait)"}
+        portrait: { raw: "(orientation: portrait)" },
       },
       minHeight: {
         "1/6": "16.666667%",
@@ -35,4 +34,4 @@ module.exports = {
     },
   },
   plugins: [],
-}
+};
