@@ -20,11 +20,19 @@ module.exports = {
       },
       minHeight: {
         "1/6": "16.666667%",
-       }
+      },
+      maxWidth: {
+        "1/4": "25%",
+        "1/2": "50%",
+        "3/4": "75%",
+      },
     },
   },
   variants: {
-    extend: {},
+    extend: {
+      opacity: ["disabled"],
+      cursor: ["disabled"],
+    },
   },
   plugins: [],
 }

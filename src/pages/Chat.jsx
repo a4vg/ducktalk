@@ -1,68 +1,84 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import TextareaAutosize from "react-textarea-autosize";
+
 import Avatar from "../components/Avatar";
+import MessagesArea from "../components/MessagesArea";
 
 const Chat = () => {
   const name = "Andrea Velásquez";
   const [showChats, setShowChats] = useState(false);
+  const [currentChat, setCurrentChat] = useState({
+    id: 0,
+    with: "Donald Duck",
+    messages: [
+      {
+        from: "You",
+        time: "14:01",
+        text: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+      },
+      {
+        from: "Donald Duck",
+        time: "14:00",
+        text: "Quidem ab repellat eveniet magnam?",
+      },
+    ],
+  });
+  let [message, setMessage] = useState("");
+
+  const changeChat = id => {
+    setCurrentChat({ ...currentChat, id });
+  };
 
   const chats = [
     {
       name: "Donald Duck",
       msg: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem ab repellat eveniet magnam? Laudantium rem illum voluptatem.",
-      currentChat: true,
     },
     {
       name: "Donald Duck",
       msg: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem ab repellat eveniet magnam? Laudantium rem illum voluptatem.",
-      currentChat: false,
     },
     {
       name: "Donald Duck",
       msg: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem ab repellat eveniet magnam? Laudantium rem illum voluptatem.",
-      currentChat: false,
     },
     {
       name: "Donald Duck",
       msg: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem ab repellat eveniet magnam? Laudantium rem illum voluptatem.",
-      currentChat: false,
     },
     {
       name: "Donald Duck",
       msg: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem ab repellat eveniet magnam? Laudantium rem illum voluptatem.",
-      currentChat: false,
     },
     {
       name: "Donald Duck",
       msg: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem ab repellat eveniet magnam? Laudantium rem illum voluptatem.",
-      currentChat: false,
     },
     {
       name: "Donald Duck",
       msg: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem ab repellat eveniet magnam? Laudantium rem illum voluptatem.",
-      currentChat: false,
     },
     {
       name: "Donald Duck",
       msg: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem ab repellat eveniet magnam? Laudantium rem illum voluptatem.",
-      currentChat: false,
     },
   ];
 
-  const currentChat = {
-    with: "Donald Duck",
-    messages: [
-      {
-        from: "You",
-        date: "14:01",
-        text: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-      },
-      {
-        from: "Donald Duck",
-        date: "14:00",
-        text: "Quidem ab repellat eveniet magnam?",
-      },
-    ],
+  const send = () => {
+    currentChat.messages.push({
+      from: "You",
+      time: "xx:xx",
+      text: message,
+    });
+    setMessage("");
+  };
+
+  const handleEnter = e => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // avoid creating new line
+      send();
+    }
   };
 
   return (
@@ -125,11 +141,12 @@ const Chat = () => {
             {chats.map((chat, idx) => (
               <div
                 key={idx}
-                className={`shadow-lg rounded-md py-5 px-3 mb-1 flex ${
-                  chat.currentChat
+                className={`shadow-lg rounded-md py-5 px-3 mb-1 flex hover:bg-yellow-50 cursor-pointer transition-colors ${
+                  currentChat.id === idx
                     ? "bg-gradient-to-r from-orange-100 to-yellow-100"
                     : "bg-white"
                 }`}
+                onClick={() => changeChat(idx)}
               >
                 <Avatar name={chat.name} className="flex-shrink-0" />
                 <div className="flex flex-col ml-2 overflow-hidden">
@@ -160,10 +177,26 @@ const Chat = () => {
           <h1 className="text-2xl ml-2">{currentChat.with}</h1>
         </div>
 
-        <div className="bg-white w-full h-1/8 py-3 px-10 flex items-center shadow-lg rounded-lg flex-grow">
-          {/* <div className="h-4 w-full bg-red-100 absolute bottom-2 left-0 right-0">
-            <input className="bg-blue-100" type="text" />
-          </div> */}
+        <MessagesArea messages={currentChat.messages} />
+
+        <div className="bg-white py-2 pr-5 rounded-xl flex shadow-xl">
+          <TextareaAutosize
+            maxRows={3}
+            className="rounded-lg focus:outline-none font-light py-1 px-3 flex-grow mx-4 break-all resize-none"
+            placeholder="Type a message"
+            value={message}
+            onChange={e => setMessage(e.target.value)}
+            onKeyDown={e => handleEnter(e)}
+          />
+          <button
+            className="w-9 h-9 p-1 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-full hover:opacity-70 transition-opacity disabled:opacity-50 disabled:cursor-default"
+            onClick={() => send()}
+            disabled={!message}
+          >
+            <svg className=" text-white fill-current" viewBox="0 0 20 20">
+              <path d="M17.218,2.268L2.477,8.388C2.13,8.535,2.164,9.05,2.542,9.134L9.33,10.67l1.535,6.787c0.083,0.377,0.602,0.415,0.745,0.065l6.123-14.74C17.866,2.46,17.539,2.134,17.218,2.268 M3.92,8.641l11.772-4.89L9.535,9.909L3.92,8.641z M11.358,16.078l-1.268-5.613l6.157-6.157L11.358,16.078z"></path>
+            </svg>
+          </button>
         </div>
       </div>
     </div>
