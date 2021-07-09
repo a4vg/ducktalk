@@ -1,4 +1,5 @@
 const stringToColor = (str, s = 70, l = 70) => {
+  if (!str) str = "";
   // Source: https://medium.com/@pppped/compute-an-arbitrary-color-for-user-avatar-starting-from-his-username-with-javascript-cd0675943b66
 
   let hash = 0;

@@ -23,7 +23,10 @@ const Login = () => {
     }
 
     API.post("/login", data)
-      .then(() => history.push("/chat"))
+      .then(r => {
+        console.log(r.data);
+        history.push({ pathname: "/chat", state: r.data });
+      })
       .catch(({ response }) => {
         if (response && response.status === 403)
           setAuthError(response.data["error"]);

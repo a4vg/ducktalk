@@ -49,7 +49,17 @@ def send_message(from_email, to_email, message):
   chat.lines.append(chat_line)
   db.session.add(chat_line)
   db.session.commit()
-  return chat.id
+
+  line_response = {
+    "message": chat_line.message,
+    "on": chat_line.created_on,
+    "from": Users.query.get(chat_line.user_id).public_name
+  }
+
+  return {
+    "chatId": chat.id,
+    "line": line_response
+  }
 
 def get_chats(from_email):
   from_user = Users.query.filter_by(email=from_email).first()
@@ -65,11 +75,7 @@ def get_chats(from_email):
       # "with" has the user that is part of the chat but is not the from_user
       # the .first() works for 1-1 chats but the query can be modified for group chats
       "with": chat.users.filter(Users.id != from_user.id).first().public_name,
-      "lastLine": {
-        "message": last_line.message,
-        "from": last_line_from.public_name,
-        "isMine": last_line_from.id == from_user.id
-      }
+      "lastLine": last_line.message
     })
   return chats_response
 
@@ -80,9 +86,14 @@ def get_chat(from_email, chat_id):
   if chat is None or chat_participant is None: # don't show chat if the user is not a participant
     return None
 
-  chat_response = { "with": [], "lines": [] }
-  for participant in chat.users:
-    chat_response["with"].append(participant.public_name)
+  chat_response = { "lines": [] }
+  chat_response["id"] = chat.id
+  otherParticipant = chat.users.filter(Users.email != from_email).first()
+  chat_response["with"] = {
+    "publicName": otherParticipant.public_name,
+    "email": otherParticipant.email
+  }
+    
   for line in chat.lines:
     line_response = {
       "message": line.message,

@@ -39,10 +39,10 @@ def login():
 def send_message():
   from_email = request.headers.get("email")
   data = request.get_json()
-  chat_id = conn.send_message(from_email, data["to"], data["message"])
-  if not chat_id:
+  response = conn.send_message(from_email, data["to"], data["message"])
+  if not response:
     abort(make_response(jsonify(error=f"Cannot send message. User with email {from_email} doesn't exist"), 404))
-  return make_response(jsonify(success=f"Message sent to chat with id {chat_id}"), 200)
+  return make_response(jsonify(response), 200)
 
 @app.route("/chats", methods=["GET"])
 def get_chats():
