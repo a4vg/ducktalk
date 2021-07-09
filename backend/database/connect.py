@@ -1,5 +1,6 @@
 from .models import *
 from .utils import database_is_empty, database_file_exists
+from werkzeug.security import generate_password_hash, check_password_hash
 
 DATABASE_FILE = "database/ducktalk.db"
 
@@ -12,7 +13,7 @@ def init_database(app):
       db.create_all()
 
 def add_user(public_name, email, password):
-  user = Users(public_name=public_name, email=email, password=password)
+  user = Users(public_name=public_name, email=email, password=generate_password_hash(password))
   db.session.add(user)
   try:
     db.session.commit()
@@ -24,7 +25,7 @@ def auth(email, password):
   user = Users.query.filter_by(email=email).first()
   if user is None:
     return None
-  if user.password != password:
+  if not check_password_hash(user.password, password):
     return False
   return { "publicName": user.public_name, "email": user.email }
 
