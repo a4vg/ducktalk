@@ -1,3 +1,15 @@
+####
+# Backend
+####
+
+__pycache__/
+backend/.vscode/
+*.db
+
+####
+# Frontend
+####
+
 # dependencies
 node_modules/
 /.pnp
