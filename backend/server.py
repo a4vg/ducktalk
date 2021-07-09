@@ -31,10 +31,8 @@ def login():
   if data["email"] is None or data["password"] is None:
     abort(make_response(jsonify(error="Required params: 'email', 'password'"), 409))
   user_details = conn.auth(data["email"], data["password"])
-  if user_details is None:
-    abort(make_response(jsonify(error="User with this email doesn't exist"), 404))
   if not user_details:
-    abort(make_response(jsonify(error="Incorrect password"), 403))
+    abort(make_response(jsonify(error="Incorrect user/password"), 403))
   return make_response(jsonify(user_details))
 
 @app.route("/chats/send", methods=["POST"])

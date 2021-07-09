@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
+import { validateForm } from "../utils/utils";
 import API from "../api/api";
 
 const RegisterForm = ({ onRegistered }) => {
@@ -10,28 +11,14 @@ const RegisterForm = ({ onRegistered }) => {
     password: "",
   });
   const [errors, setErrors] = useState({});
-  const emailRegex =
-    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-  const validate = () => {
-    let err = {};
-    let valid = true;
-    Object.keys(data).forEach(field => {
-      err[field] = "";
-      if (!data[field]) {
-        err[field] = "Hey! You left this empty";
-        valid = false;
-      } else err[field] = "";
-    });
-    if (data.email && !emailRegex.test(data.email))
-      err["email"] = "This is not an email";
-    if (!valid) setErrors(err);
-    return valid;
-  };
 
   const register = e => {
     e.preventDefault();
-    if (!validate()) return;
+    const [valid, err] = validateForm(data);
+    if (!valid) {
+      setErrors(err);
+      return;
+    }
 
     API.post("/register", data)
       .then(() => onRegistered(true))
