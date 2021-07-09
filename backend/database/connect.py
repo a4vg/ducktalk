@@ -26,7 +26,7 @@ def auth(email, password):
     return None
   if user.password != password:
     return False
-  return { "public_name": user.public_name, "email": user.email }
+  return { "publicName": user.public_name, "email": user.email }
 
 def send_message(from_email, to_email, message):
   # Assume from_user exists and is authenticated

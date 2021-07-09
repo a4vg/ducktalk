@@ -1,25 +1,28 @@
 from flask import Flask, request, abort, make_response, jsonify
+from flask_cors import CORS
 import database.connect as conn
 
 app = Flask(__name__)
+CORS(app)
 
 @app.before_request
 def only_post_json():
   if request.method == "POST" and not request.is_json: 
     abort(make_response(jsonify(error="Request must be JSON"), 415))
 
-# def validate_required(data, req_params):
-  # for req_param in data:
+def validateReq(data, required):
+  if not all(field in data and data[field] for field in required):
+    abort(make_response(jsonify(error=f"Required params: {', '.join(required)}"), 409))
 
 
 @app.route("/register", methods=["POST"])
 def register():
   data = request.get_json()
-  if data["public_name"] is None or data["email"] is None or data["password"] is None:
-    abort(make_response(jsonify(error="Required params: 'public_name', 'email', 'password'"), 409))
-  success = conn.add_user(data["public_name"], data["email"], data["password"])
+  validateReq(data, ["publicName", "email", "password"])
+
+  success = conn.add_user(data["publicName"], data["email"], data["password"])
   if not success:
-    abort(make_response(jsonify(error="Email already in use"), 409))
+    abort(make_response(jsonify(email="Email already in use"), 400))
   return make_response(jsonify({}), 200)
 
 @app.route("/login", methods=["POST"])
