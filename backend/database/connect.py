@@ -24,15 +24,15 @@ def add_user(public_name, email, password):
 def auth(email, password):
   user = Users.query.filter_by(email=email).first()
   if user is None:
-    return None
+    return
   if not check_password_hash(user.password, password):
-    return False
-  return { "publicName": user.public_name, "email": user.email }
+    return
+  return { "publicName": user.public_name, "email": user.email }, user.id
 
-def send_message(from_email, to_email, message):
+def send_message(from_user_id, to_id, message):
   # Assume from_user exists and is authenticated
-  from_user = Users.query.filter_by(email=from_email).first()
-  to_user = Users.query.filter_by(email=to_email).first()
+  from_user = Users.query.get(from_user_id)
+  to_user = Users.query.filter_by(id=to_id).first()
   if (to_user is None):
     return False
 
@@ -62,8 +62,8 @@ def send_message(from_email, to_email, message):
     "line": line_response
   }
 
-def get_chats(from_email):
-  from_user = Users.query.filter_by(email=from_email).first()
+def get_chats(from_id):
+  from_user = Users.query.filter_by(id=from_id).first()
   chats_response = []
   chats = from_user.chats.order_by(Chats.updated_on).all()
 
@@ -80,19 +80,19 @@ def get_chats(from_email):
     })
   return chats_response
 
-def get_chat(from_email, chat_id):
+def get_chat(from_id, chat_id):
   chat = Chats.query.get(chat_id)
-  chat_participant = chat.users.filter_by(email=from_email).first()
+  chat_participant = chat.users.filter_by(id=from_id).first()
 
   if chat is None or chat_participant is None: # don't show chat if the user is not a participant
     return None
 
   chat_response = { "lines": [] }
   chat_response["id"] = chat.id
-  otherParticipant = chat.users.filter(Users.email != from_email).first()
+  otherParticipant = chat.users.filter(Users.id != from_id).first()
   chat_response["with"] = {
     "publicName": otherParticipant.public_name,
-    "email": otherParticipant.email
+    "id": otherParticipant.id
   }
     
   for line in chat.lines:
@@ -104,8 +104,3 @@ def get_chat(from_email, chat_id):
     chat_response["lines"].append(line_response)
 
   return chat_response
-    
-
-  
-
-

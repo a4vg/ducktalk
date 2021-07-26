@@ -22,7 +22,7 @@ const Login = () => {
       return;
     }
 
-    API.post("/login", data)
+    API.post("/login", data, {withCredentials: true})
       .then(r => {
         console.log(r.data);
         history.push({ pathname: "/chat", state: r.data });

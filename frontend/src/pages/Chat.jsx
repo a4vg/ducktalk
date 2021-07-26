@@ -14,7 +14,7 @@ const Chat = () => {
   const [ready, setReady] = useState(false);
 
   const [publicName, setPublicName] = useState("");
-  const [email, setEmail] = useState("");
+  const [id, setId] = useState("");
   const [chats, setChats] = useState([]);
   // [
   //   {
@@ -47,13 +47,13 @@ const Chat = () => {
   };
 
   useEffect(async () => {
-    const { publicName, email } = location.state;
+    const { publicName, id } = location.state;
     console.log("Location:", location.state);
     setPublicName(publicName);
-    setEmail(email);
+    setId(id);
 
     // Retrieve chats
-    const r_chats = await API.get("/chats", { headers: { email } });
+    const r_chats = await API.get("/chats", { withCredentials: true} );
     setChats(r_chats.data);
 
     console.log("Chats:", r_chats.data);
@@ -62,7 +62,7 @@ const Chat = () => {
     if (r_chats.data.length !== 0) {
       console.log("Getting chat");
       const r_currentChat = await API.get(`/chats/${r_chats.data[0].id}`, {
-        headers: { email },
+        headers: { id }, withCredentials: true
       });
       setCurrentChat(r_currentChat.data);
     }
@@ -76,11 +76,11 @@ const Chat = () => {
 
   const send = () => {
     const payload = {
-      to: currentChat.with.email,
+      to: currentChat.with.id,
       message,
     };
 
-    API.post("/chats/send", payload, { headers: { email } }).then(r => {
+    API.post("/chats/send", payload, {withCredentials: true }).then(r => {
       let tempCurChat = Object.assign({}, currentChat);
       tempCurChat.lines.push(r.data.line);
       setCurrentChat(tempCurChat);
