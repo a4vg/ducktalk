@@ -1,21 +1,31 @@
 import React, { useState } from "react";
+import serverConn from "../scripts/serverConn";
 
-const NewChatForm = () => {
-  const [showForm, setShowForm] = useState(true);
+const NewChatForm = ({ onChatCreated }) => {
+  const [showForm, setShowForm] = useState(false);
   const [toEmail, setToEmail] = useState("");
+  const [error, setError] = useState("");
 
-  const createChat = () => {};
+  const createChat = async () => {
+    try {
+      const { chatItem, chat } = await serverConn.createChat(toEmail);
+      onChatCreated(chatItem, chat);
+    } catch (e) {
+      if (e.response && e.response.status === 400)
+        setError(e.response.data["error"]);
+      else throw e;
+    }
+  };
 
   return (
     <div className="mb-3">
       {showForm ? (
         <div className="bg-white shadow rounded-xl p-2 pl-4 fade-transition">
-          <h4 className="mt-2 bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-yellow-500 font-bold">
+          <h4 className="mt-2 bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-yellow-500 font-bold mb-3">
             Create new chat
           </h4>
-          <label className="mt-3" htmlFor="email">
-            User email
-          </label>
+          {error && <span className="text-sm block text-red-500">{error}</span>}
+          <label htmlFor="email">User email</label>
           <input
             className="shadow p-2 rounded-lg ml-4 mt-1 inline font-light focus:outline-none"
             type="email"

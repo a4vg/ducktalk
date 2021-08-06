@@ -75,6 +75,20 @@ def logout():
   unset_jwt_cookies(response)
   return response
 
+@app.route("/chats", methods=["POST"])
+@jwt_required()
+def create_chat():
+  data = request.get_json()
+  validateReq(data, ["toEmail"])
+
+  from_user_id = get_jwt_identity()
+  chat = conn.create_chat(from_user_id, data["toEmail"])
+  if chat is None:
+    abort(make_response(jsonify(error="User doesn't exist"), 400))
+  if not chat:
+    abort(make_response(jsonify(error="Chat already exists"), 400))
+  return make_response(jsonify(chat), 200)
+
 @app.route("/chats/send", methods=["POST"])
 @jwt_required()
 def send_message():

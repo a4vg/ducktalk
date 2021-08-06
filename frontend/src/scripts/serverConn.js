@@ -39,4 +39,13 @@ export const login = async data => {
   return { publicName, id, wrappingKey, signingKeys };
 };
 
-export default { registration, login };
+export const createChat = async toEmail => {
+  let response = await API.post(
+    "/chats",
+    { toEmail: toEmail },
+    { withCredentials: true }
+  );
+  return response.data;
+};
+
+export default { registration, login, createChat };

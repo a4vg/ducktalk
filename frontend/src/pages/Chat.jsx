@@ -40,7 +40,10 @@ const Chat = () => {
   //       }),
   //     },
   //   ],
-  //   with: "Foo Bar",
+  //   with: {
+  //     publicName: "Foo Bar",
+  //     id: "3"
+  //   },
   //   id: 1,
   // });
 
@@ -102,6 +105,13 @@ const Chat = () => {
     });
 
     setMessage("");
+  };
+
+  const handleChatCreated = (chatItem, chat) => {
+    let tempChats = chats.slice(); // copy
+    tempChats.unshift(chatItem);
+    setChats(tempChats);
+    setCurrentChat(chat);
   };
 
   const logout = () => {
@@ -167,7 +177,11 @@ const Chat = () => {
             Chats
           </h2>
           <div className="overflow-y-auto">
-            <NewChatForm />
+            <NewChatForm
+              onChatCreated={(chatItem, chat) =>
+                handleChatCreated(chatItem, chat)
+              }
+            />
             {chats.length !== 0 ? (
               chats.map(chat => (
                 <div
