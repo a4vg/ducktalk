@@ -2,14 +2,10 @@ import API from "../api/api";
 import crypto from "./crypto";
 
 export const registration = async data => {
-  console.log(data);
   const { password } = data;
 
   const wrappingKey = await crypto.generateWrappingKey(password);
   const signingKey = await crypto.generateSigningKey(); // key-pair
-
-  console.log("wrappingKey", wrappingKey);
-  console.log("signingKey", signingKey);
 
   // Wrap private key and store wrapped key and iv (for AES-GCM)
   const wrappedPrivateKey = await crypto.wrapKey(
@@ -25,7 +21,6 @@ export const registration = async data => {
 
   data["signingKey"] = exportedSigningPair;
   data["wrappingKeySalt"] = wrappingKey.salt;
-  console.log("Posting", data);
 
   await API.post("/register", data);
 };

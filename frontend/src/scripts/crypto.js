@@ -138,22 +138,6 @@ const getKeyMaterial = password => {
   );
 };
 
-// f = async () => {
-//   const signKey = await generateSigningKey();
-//   const wrappingKey = await generateWrappingKey("mypass");
-
-//   const { wrappedKey, iv } = await wrapKey(wrappingKey, signKey.privateKey);
-
-//   const unwrappedPrivateSignKey = await unwrapSigningKey(
-//     wrappingKey,
-//     wrappedKey,
-//     iv
-//   );
-//   console.log(unwrappedPrivateSignKey);
-//   console.log(signKey.privateKey);
-// };
-// f();
-
 export default {
   generateSigningKey,
   generateWrappingKey,
