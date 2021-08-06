@@ -1,6 +1,6 @@
 import React from "react";
 import { ReactComponent as AvatarSvg } from "../assets/images/avatar.svg";
-import { stringToGradient } from "../utils/utils";
+import { stringToGradient } from "../scripts/utils";
 
 const Avatar = ({ name, className = "" }) => {
   return (

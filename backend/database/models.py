@@ -17,6 +17,9 @@ class Users(db.Model):
   public_name = db.Column(db.String)
   email = db.Column(db.Integer, index=True, unique=True)
   password = db.Column(db.String)
+  skPublic = db.Column(db.String)
+  skPrivate = db.Column(db.String)
+  skPrivateIV = db.Column(db.String)
   chats = db.relationship("Chats", secondary=relation_chat_user, backref=db.backref("users", lazy="dynamic"), lazy="dynamic")
 
   def __repr__(self):

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 
-import { validateForm } from "../utils/utils";
+import { validateForm } from "../scripts/utils";
 import API from "../api/api";
 
 const Login = () => {
@@ -22,7 +22,7 @@ const Login = () => {
       return;
     }
 
-    API.post("/login", data, {withCredentials: true})
+    API.post("/login", data, { withCredentials: true })
       .then(r => {
         console.log(r.data);
         history.push({ pathname: "/chat", state: r.data });

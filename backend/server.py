@@ -48,9 +48,9 @@ def refresh_expiring_jwts(response):
 @app.route("/register", methods=["POST"])
 def register():
   data = request.get_json()
-  validateReq(data, ["publicName", "email", "password"])
+  validateReq(data, ["publicName", "email", "password", "signingKey"])
 
-  success = conn.add_user(data["publicName"], data["email"], data["password"])
+  success = conn.add_user(data["publicName"], data["email"], data["password"], data["signingKey"])
   if not success:
     abort(make_response(jsonify(email="Email already in use"), 400))
   return make_response(jsonify({}), 200)

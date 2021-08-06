@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-import { validateForm } from "../utils/utils";
-import API from "../api/api";
+import { validateForm } from "../scripts/utils";
+import serverConn from "../scripts/serverConn";
 
 const RegisterForm = ({ onRegistered }) => {
   const [data, setData] = useState({
@@ -20,11 +20,18 @@ const RegisterForm = ({ onRegistered }) => {
       return;
     }
 
-    API.post("/register", data)
+    serverConn
+      .registration(data)
       .then(() => onRegistered(true))
-      .catch(({ response }) => {
-        if (response && response.status === 400) setErrors(response.data);
+      .catch(e => {
+        if (e.response && e.response.status === 400) setErrors(e.response.data);
+        else throw e;
       });
+    // .catch(({ response }) => {
+    //   if (response && response.status === 400) setErrors(response.data);
+    // });
+    // onRegistered(true);
+    // .then(() => onRegistered(true))
   };
 
   return (

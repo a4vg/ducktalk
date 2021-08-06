@@ -12,8 +12,17 @@ def init_database(app):
     with app.app_context():
       db.create_all()
 
-def add_user(public_name, email, password):
-  user = Users(public_name=public_name, email=email, password=generate_password_hash(password))
+def add_user(public_name, email, password, signingKey):
+  skPublic = signingKey["publicKey"]
+  skPrivate = signingKey["privateKey"]["wrappedKey"]
+  skPrivateIV = signingKey["privateKey"]["iv"]
+  user = Users(
+    public_name=public_name,
+    email=email,
+    password=generate_password_hash(password),
+    skPublic=skPublic,
+    skPrivate=skPrivate,
+    skPrivateIV=skPrivateIV)
   db.session.add(user)
   try:
     db.session.commit()
