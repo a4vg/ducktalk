@@ -48,9 +48,9 @@ def refresh_expiring_jwts(response):
 @app.route("/register", methods=["POST"])
 def register():
   data = request.get_json()
-  validateReq(data, ["publicName", "email", "password", "signingKey"])
+  validateReq(data, ["publicName", "email", "password", "signingKey", "wrappingKeySalt"])
 
-  success = conn.add_user(data["publicName"], data["email"], data["password"], data["signingKey"])
+  success = conn.add_user(data["publicName"], data["email"], data["password"], data["signingKey"], data["wrappingKeySalt"])
   if not success:
     abort(make_response(jsonify(email="Email already in use"), 400))
   return make_response(jsonify({}), 200)
@@ -63,6 +63,7 @@ def login():
   user_details, user_id = conn.auth(data["email"], data["password"])
   if not user_details:
     abort(make_response(jsonify(error="Incorrect user/password"), 403))
+
   access_token = create_access_token(identity=user_id)
   response = jsonify(user_details)
   set_access_cookies(response, access_token)

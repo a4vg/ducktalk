@@ -20,6 +20,7 @@ class Users(db.Model):
   skPublic = db.Column(db.String)
   skPrivate = db.Column(db.String)
   skPrivateIV = db.Column(db.String)
+  wkSalt = db.Column(db.String)
   chats = db.relationship("Chats", secondary=relation_chat_user, backref=db.backref("users", lazy="dynamic"), lazy="dynamic")
 
   def __repr__(self):

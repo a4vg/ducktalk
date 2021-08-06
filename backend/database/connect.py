@@ -12,7 +12,7 @@ def init_database(app):
     with app.app_context():
       db.create_all()
 
-def add_user(public_name, email, password, signingKey):
+def add_user(public_name, email, password, signingKey, wrappingKeySalt):
   skPublic = signingKey["publicKey"]
   skPrivate = signingKey["privateKey"]["wrappedKey"]
   skPrivateIV = signingKey["privateKey"]["iv"]
@@ -22,7 +22,8 @@ def add_user(public_name, email, password, signingKey):
     password=generate_password_hash(password),
     skPublic=skPublic,
     skPrivate=skPrivate,
-    skPrivateIV=skPrivateIV)
+    skPrivateIV=skPrivateIV,
+    wkSalt = wrappingKeySalt)
   db.session.add(user)
   try:
     db.session.commit()
@@ -36,7 +37,22 @@ def auth(email, password):
     return None, None
   if not check_password_hash(user.password, password):
     return None, None
-  return { "publicName": user.public_name, "email": user.email }, user.id
+
+  signingKeys = {
+    "privateKey": {
+      "key": user.skPrivate,
+      "iv": user.skPrivateIV
+    },
+    "publicKey": user.skPublic
+  }
+  return {
+    "publicName": user.public_name,
+    "email": user.email,
+    "keys": {
+      "signingKeys": signingKeys,
+      "wrappingKeySalt": user.wkSalt
+    }
+  }, user.id
 
 def send_message(from_user_id, to_id, message):
   # Assume from_user exists and is authenticated

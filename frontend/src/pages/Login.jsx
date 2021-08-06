@@ -3,9 +3,13 @@ import { Link, useHistory } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 
 import { validateForm } from "../scripts/utils";
-import API from "../api/api";
+import serverConn from "../scripts/serverConn";
+
+import { useIndexedDB } from "react-indexed-db";
 
 const Login = () => {
+  const indexDB = useIndexedDB("keys");
+
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -14,7 +18,7 @@ const Login = () => {
   const [authError, setAuthError] = useState("");
   let history = useHistory();
 
-  const login = e => {
+  const login = async e => {
     e.preventDefault();
     const [valid, err] = validateForm(data);
     if (!valid) {
@@ -22,14 +26,17 @@ const Login = () => {
       return;
     }
 
-    API.post("/login", data, { withCredentials: true })
-      .then(r => {
-        console.log(r.data);
-        history.push({ pathname: "/chat", state: r.data });
+    serverConn
+      .login(data)
+      .then(({ publicName, id, wrappingKey, signingKeys }) => {
+        indexDB.add({ name: "wrappingKey", key: wrappingKey });
+        indexDB.add({ name: "signingKeys", key: signingKeys });
+        history.push({ pathname: "/chat", state: { publicName, id } });
       })
-      .catch(({ response }) => {
-        if (response && response.status === 403)
-          setAuthError(response.data["error"]);
+      .catch(e => {
+        if (e.response && e.response.status === 403)
+          setAuthError(e.response.data["error"]);
+        else throw e;
       });
   };
 
@@ -96,7 +103,7 @@ const Login = () => {
         </div>
 
         <button
-          onClick={e => login(e)}
+          onClick={async e => await login(e)}
           className="mt-5 bg-gradient-to-r from-orange-500 to-yellow-500 font-semibold text-white rounded-xl py-2 w-full hover:opacity-75 transition-opacity"
         >
           Enter duck dimension

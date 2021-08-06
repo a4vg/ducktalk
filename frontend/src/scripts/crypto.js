@@ -1,4 +1,4 @@
-import { arrayBufferToBase64 } from "./utils";
+import { arrayBufferToBase64, base64ToArrayBuffer } from "./utils";
 
 export const generateSigningKey = () => {
   return window.crypto.subtle.generateKey(
@@ -14,6 +14,26 @@ export const generateSigningKey = () => {
 export const generateWrappingKey = async password => {
   const salt = window.crypto.getRandomValues(new Uint8Array(16));
   const keyMaterial = await getKeyMaterial(password);
+  return {
+    key: await window.crypto.subtle.deriveKey(
+      {
+        name: "PBKDF2",
+        salt: salt,
+        iterations: 100000,
+        hash: "SHA-256",
+      },
+      keyMaterial, // password as a derived key
+      { name: "AES-GCM", length: 256 },
+      true, // extractable
+      ["wrapKey", "unwrapKey"]
+    ),
+    salt: arrayBufferToBase64(salt),
+  };
+};
+
+export const getWrappingKey = async (password, salt) => {
+  const keyMaterial = await getKeyMaterial(password);
+  salt = new Uint8Array(base64ToArrayBuffer(salt));
   return window.crypto.subtle.deriveKey(
     {
       name: "PBKDF2",
@@ -72,16 +92,39 @@ export const unwrapSigningKey = (unwrappingKey, keyToUnwrap, iv) => {
   );
 };
 
-export const exportKeyPair = async (privateKey, publicKey) => {
+export const exportSigningKeys = async (privateKey, publicKey) => {
   privateKey["wrappedKey"] = arrayBufferToBase64(privateKey["wrappedKey"]);
   privateKey["iv"] = arrayBufferToBase64(privateKey["iv"]);
-  publicKey = await exportPublicKey(publicKey);
+  publicKey = await exportPublicSigningKey(publicKey);
 
   return { publicKey, privateKey };
 };
 
-const exportPublicKey = async key => {
+export const importSigningKeys = async (unwrappingKey, signingKeys) => {
+  let { key, iv } = signingKeys.privateKey;
+  let privateKey = base64ToArrayBuffer(key);
+  iv = new Uint8Array(base64ToArrayBuffer(iv));
+  privateKey = await unwrapSigningKey(unwrappingKey, privateKey, iv);
+  let publicKey = await importPublicSigningKey(signingKeys.publicKey);
+
+  return { publicKey, privateKey };
+};
+
+const exportPublicSigningKey = async key => {
   return JSON.stringify(await crypto.subtle.exportKey("jwk", key));
+};
+
+const importPublicSigningKey = async key => {
+  return crypto.subtle.importKey(
+    "jwk",
+    JSON.parse(key),
+    {
+      name: "ECDSA",
+      namedCurve: "P-384",
+    },
+    true, // extractable
+    ["verify"]
+  );
 };
 
 const getKeyMaterial = password => {
@@ -110,3 +153,13 @@ const getKeyMaterial = password => {
 //   console.log(signKey.privateKey);
 // };
 // f();
+
+export default {
+  generateSigningKey,
+  generateWrappingKey,
+  getWrappingKey,
+  wrapKey,
+  unwrapSigningKey,
+  exportSigningKeys,
+  importSigningKeys,
+};

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useHistory } from "react-router-dom";
+import { useIndexedDB } from "react-indexed-db";
 import TextareaAutosize from "react-textarea-autosize";
 
 import API from "../api/api";
@@ -8,6 +9,7 @@ import Avatar from "../components/Avatar";
 import MessagesArea from "../components/MessagesArea";
 
 const Chat = () => {
+  const indexDB = useIndexedDB("keys");
   const location = useLocation();
   let history = useHistory();
 
@@ -102,7 +104,9 @@ const Chat = () => {
   };
 
   const logout = () => {
-    API.get(`/logout`, { withCredentials: true }).then(() => history.push("/"));
+    API.get(`/logout`, { withCredentials: true }).then(() => {
+      indexDB.clear().then(history.push("/"));
+    });
   };
 
   return ready ? (
