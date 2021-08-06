@@ -28,14 +28,14 @@ const MessagesArea = ({ lines, myName }) => {
             <div
               className={`message py-2 px-3 rounded-xl shadow-xl mb-1 bg-gradient-to-r ${
                 m.from === myName
-                  ? "rounded-br-none from-orange-200 to-yellow-200"
-                  : "rounded-bl-none from-orange-300 to-yellow-500 text-white"
+                  ? "rounded-br-none from-orange-300 to-yellow-500 text-white"
+                  : "rounded-bl-none from-orange-200 to-yellow-200"
               }`}
             >
               {m.message}
               <span
                 className={`text-xs mx-2 whitespace-nowrap ${
-                  m.from === myName ? "text-gray-400" : "text-white"
+                  m.from === myName ? "text-white" : "text-black"
                 }`}
               >
                 {formatDate(m.on)}

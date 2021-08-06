@@ -31,8 +31,10 @@ export const validateForm = data => {
       valid = false;
     } else err[field] = "";
   });
-  if (data.email && !emailRegex.test(data.email))
+  if (data.email && !emailRegex.test(data.email)) {
     err["email"] = "This is not an email";
-  // if (!valid) setErrors(err);
+    valid = false;
+  }
+
   return [valid, err];
 };
