@@ -24,9 +24,9 @@ def add_user(public_name, email, password):
 def auth(email, password):
   user = Users.query.filter_by(email=email).first()
   if user is None:
-    return
+    return None, None
   if not check_password_hash(user.password, password):
-    return
+    return None, None
   return { "publicName": user.public_name, "email": user.email }, user.id
 
 def send_message(from_user_id, to_id, message):

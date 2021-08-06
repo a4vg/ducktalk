@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 import TextareaAutosize from "react-textarea-autosize";
 
 import API from "../api/api";
@@ -9,6 +9,8 @@ import MessagesArea from "../components/MessagesArea";
 
 const Chat = () => {
   const location = useLocation();
+  let history = useHistory();
+
   const [showChats, setShowChats] = useState(false);
   let [message, setMessage] = useState("");
   const [ready, setReady] = useState(false);
@@ -47,31 +49,35 @@ const Chat = () => {
   };
 
   useEffect(async () => {
-    const { publicName, id } = location.state;
-    console.log("Location:", location.state);
-    setPublicName(publicName);
-    setId(id);
+    try {
+      const { publicName, id } = location.state;
+      setPublicName(publicName);
+      setId(id);
 
-    // Retrieve chats
-    const r_chats = await API.get("/chats", { withCredentials: true} );
-    setChats(r_chats.data);
+      // Retrieve chats
+      const r_chats = await API.get("/chats", { withCredentials: true });
+      setChats(r_chats.data);
 
-    console.log("Chats:", r_chats.data);
-
-    // Retrieve first chat
-    if (r_chats.data.length !== 0) {
-      console.log("Getting chat");
-      const r_currentChat = await API.get(`/chats/${r_chats.data[0].id}`, {
-        headers: { id }, withCredentials: true
-      });
-      setCurrentChat(r_currentChat.data);
+      // Retrieve first chat
+      if (r_chats.data.length !== 0) {
+        console.log("Getting chat");
+        const r_currentChat = await API.get(`/chats/${r_chats.data[0].id}`, {
+          withCredentials: true,
+        });
+        setCurrentChat(r_currentChat.data);
+      }
+    } catch {
+      history.push("/"); // not authenticated
     }
 
     setReady(true);
   }, [location.state]);
 
-  const changeChat = id => {
-    setCurrentChat({ ...currentChat, id });
+  const changeChat = async id => {
+    const new_chat = await API.get(`/chats/${id}`, {
+      withCredentials: true,
+    });
+    setCurrentChat(new_chat);
   };
 
   const send = () => {
@@ -80,7 +86,7 @@ const Chat = () => {
       message,
     };
 
-    API.post("/chats/send", payload, {withCredentials: true }).then(r => {
+    API.post("/chats/send", payload, { withCredentials: true }).then(r => {
       let tempCurChat = Object.assign({}, currentChat);
       tempCurChat.lines.push(r.data.line);
       setCurrentChat(tempCurChat);
@@ -93,6 +99,10 @@ const Chat = () => {
     });
 
     setMessage("");
+  };
+
+  const logout = () => {
+    API.get(`/logout`, { withCredentials: true }).then(() => history.push("/"));
   };
 
   return ready ? (
@@ -120,7 +130,7 @@ const Chat = () => {
               <Avatar name={publicName} />
               <span className="ml-3">{publicName}</span>
             </span>
-            <Link to="/" className="ml-auto">
+            <button onClick={logout} className="ml-auto">
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24">
                 <path
                   stroke="currentColor"
@@ -144,7 +154,7 @@ const Chat = () => {
                   d="M15.25 4.75H6.75C5.64543 4.75 4.75 5.64543 4.75 6.75V17.25C4.75 18.3546 5.64543 19.25 6.75 19.25H15.25"
                 />
               </svg>
-            </Link>
+            </button>
           </div>
         </div>
         <div className="h-5/6 p-3 flex flex-col">
@@ -156,12 +166,12 @@ const Chat = () => {
               chats.map(chat => (
                 <div
                   key={chat.id}
+                  onClick={() => changeChat(id)}
                   className={`shadow-lg rounded-md py-5 px-3 mb-1 flex hover:bg-yellow-50 cursor-pointer transition-colors ${
                     currentChat && currentChat.id === chat.id
                       ? "bg-gradient-to-r from-orange-100 to-yellow-100"
                       : "bg-white"
                   }`}
-                  // onClick={() => changeChat(id)}
                 >
                   <Avatar name={chat.with} className="flex-shrink-0" />
                   <div className="flex flex-col ml-2 overflow-hidden">

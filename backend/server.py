@@ -10,7 +10,6 @@ app = Flask(__name__)
 CORS(app, supports_credentials=True)
 
 # Configuration options
-
 app.config["JWT_COOKIE_SECURE"] = False
 app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
 app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this in your code!
@@ -19,6 +18,7 @@ app.config["JWT_AUTH_USERNAME_KEY"] = "id"
 app.config["CORS_ORIGINS"] = "http://localhost:8080" # frontend url
 app.config["JWT_COOKIE_SAMESITE"] = "None"
 app.config["JWT_COOKIE_SECURE"] = True
+app.config["JWT_CSRF_METHODS"] = []
 
 JWTManager(app)
 
@@ -68,9 +68,9 @@ def login():
   set_access_cookies(response, access_token)
   return make_response(response)
 
-@app.route("/logout", methods=["POST"])
+@app.route("/logout")
 def logout():
-  response = jsonify({"msg": "logout successful"})
+  response = jsonify({"msg": "Logout successful"})
   unset_jwt_cookies(response)
   return response
 
