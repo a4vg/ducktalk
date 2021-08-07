@@ -110,6 +110,8 @@ const Chat = () => {
   const handleChatCreated = (chatItem, chat) => {
     let tempChats = chats.slice(); // copy
     tempChats.unshift(chatItem);
+    console.log(tempChats);
+    console.log(chat);
     setChats(tempChats);
     setCurrentChat(chat);
   };

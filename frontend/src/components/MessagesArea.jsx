@@ -15,35 +15,37 @@ const MessagesArea = ({ lines, myName }) => {
 
   return (
     <div className="flex-grow flex flex-col px-4 py-3 md:overflow-x-hidden overflow-auto">
-      {lines.length !== 0
-        ? lines.map((m, idx) => (
+      {lines ? (
+        lines.map((m, idx) => (
+          <div
+            key={idx}
+            className={`flex max-w-full md:max-w-3/4 lg:max-w-1/2 break-all ${
+              m.from === myName
+                ? "self-end items-end flex-row-reverse"
+                : "self-start items-start"
+            } ${isNextSameFrom(idx) ? "mb-1" : "mb-3"}`}
+          >
             <div
-              key={idx}
-              className={`flex max-w-full md:max-w-3/4 lg:max-w-1/2 break-all ${
+              className={`message py-2 px-3 rounded-xl shadow-xl mb-1 bg-gradient-to-r ${
                 m.from === myName
-                  ? "self-end items-end flex-row-reverse"
-                  : "self-start items-start"
-              } ${isNextSameFrom(idx) ? "mb-1" : "mb-3"}`}
+                  ? "rounded-br-none from-orange-300 to-yellow-500 text-white"
+                  : "rounded-bl-none from-orange-200 to-yellow-200"
+              }`}
             >
-              <div
-                className={`message py-2 px-3 rounded-xl shadow-xl mb-1 bg-gradient-to-r ${
-                  m.from === myName
-                    ? "rounded-br-none from-orange-300 to-yellow-500 text-white"
-                    : "rounded-bl-none from-orange-200 to-yellow-200"
+              {m.message}
+              <span
+                className={`text-xs mx-2 whitespace-nowrap ${
+                  m.from === myName ? "text-white" : "text-black"
                 }`}
               >
-                {m.message}
-                <span
-                  className={`text-xs mx-2 whitespace-nowrap ${
-                    m.from === myName ? "text-white" : "text-black"
-                  }`}
-                >
-                  {formatDate(m.on)}
-                </span>
-              </div>
+                {formatDate(m.on)}
+              </span>
             </div>
-          ))
-        : "No messages yet"}
+          </div>
+        ))
+      ) : (
+        <span>"No messages yet"</span>
+      )}
     </div>
   );
 };

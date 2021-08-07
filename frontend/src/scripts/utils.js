@@ -36,6 +36,12 @@ export const validateForm = data => {
     valid = false;
   }
 
+  if (data["passwordAgain"])
+    if (data["passwordAgain"] !== data["password"]) {
+      err["passwordAgain"] = "This is not the same password...";
+      valid = false;
+    }
+
   return [valid, err];
 };
 

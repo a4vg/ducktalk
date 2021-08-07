@@ -74,15 +74,15 @@ def create_chat(from_user_id, to_email):
 
   chat_item_response = {
     "id": chat.id,
-    "with": {
-      "publicName": to_user.public_name,
-      "id": to_user.id
-    },
+    "with": to_user.public_name,
     "lastLine": ""
   }
 
   chat_response = {
-    "with": to_user.public_name,
+    "with": {
+      "publicName": to_user.public_name,
+      "id": to_user.id
+    },
     "id": chat.id,
     "lines": []
   }
